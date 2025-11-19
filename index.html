@@ -23,8 +23,39 @@
             <strong>Processo de Compra:</strong> 1. Clica em Comprar > 2. Preenche o formulário > 3. Faz o pagamento por IBAN (está no formulário) > 4. Anexa o comprovativo.
         </div>
 
-        <div class="row" id="contentor-produtos">
+        <div class="container mt-5">
+    
+    <div class="alert alert-warning text-center" role="alert">
+        ... (manter o texto de IBAN/Comprovativo) ...
+    </div>
+
+    <div class="row">
+        
+        <div class="col-md-8">
+            <h2 class="mb-4">Catálogo de Produtos</h2>
+            <div class="row" id="contentor-produtos">
+                </div>
+        </div>
+
+        <div class="col-md-4">
+            <div id="carrinho-painel" class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    🛒 O Seu Carrinho
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush mb-3" id="carrinho-lista">
+                        <li class="list-group-item text-center text-muted">Carrinho Vazio</li>
+                    </ul>
+                    <h5 class="text-right">Total: <span id="carrinho-total">0.00€</span></h5>
+                    
+                    <button id="checkout-btn" onclick="finalizarCompra()" class="btn btn-success w-100 mt-3" disabled>
+                        Finalizar Compra
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
+</div>
     </div>
 
     <script>
