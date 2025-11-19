@@ -59,11 +59,136 @@
     </div>
 
     <script>
-        // --- 🔴 CONFIGURAÇÃO OBRIGATÓRIA (Substituir pelos teus IDs) ---
+        // --- 🔴 CONFIGURAÇÃO OBRIGATÓRIA (Do Google Forms) ---
         const LINK_FORMULARIO = "https://docs.google.com/forms/d/e/SEU_LINK_BASE_AQUI/viewform";
         const ID_CAMPO_PRODUTO = "entry.SEU_ID_DO_CAMPO_PRODUTO"; 
-        // -----------------------------------------------------------
+        // ---------------------------------------------------
 
+        let carrinho = [];
+
+        // --- FUNÇÕES BÁSICAS DE CARRINHO E ARMAZENAMENTO ---
+
+        function loadCart() {
+            // Tenta carregar o carrinho do armazenamento local
+            const storedCart = localStorage.getItem('futsal_merch_cart');
+            if (storedCart) {
+                carrinho = JSON.parse(storedCart);
+            }
+        }
+
+        function saveCart() {
+            // Guarda o carrinho no armazenamento local
+            localStorage.setItem('futsal_merch_cart', JSON.stringify(carrinho));
+        }
+
+        function renderCart() {
+            const lista = document.getElementById('carrinho-lista');
+            const totalElement = document.getElementById('carrinho-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+            
+            // Limpa a lista atual
+            lista.innerHTML = '';
+            let total = 0;
+
+            if (carrinho.length === 0) {
+                lista.innerHTML = '<li class="list-group-item text-center text-muted">Carrinho Vazio</li>';
+                checkoutBtn.disabled = true;
+                totalElement.textContent = '0.00€';
+                return;
+            }
+
+            // Agrupa itens para mostrar quantidade
+            const itensAgrupados = carrinho.reduce((acc, item) => {
+                const key = item.id;
+                if (!acc[key]) {
+                    acc[key] = { ...item, quantidade: 0 };
+                }
+                acc[key].quantidade++;
+                return acc;
+            }, {});
+
+            
+            Object.values(itensAgrupados).forEach((item, index) => {
+                const subtotal = item.preco * item.quantidade;
+                total += subtotal;
+
+                const li = document.createElement('li');
+                li.className = 'list-group-item d-flex justify-content-between align-items-center';
+                li.innerHTML = `
+                    <span>
+                        ${item.nome} (${item.quantidade}x)
+                    </span>
+                    <div>
+                        ${subtotal.toFixed(2)}€
+                        <button class="btn btn-sm btn-danger ms-2" onclick="removerDoCarrinho(${item.id})">
+                            <i class="fas fa-trash"></i>&nbsp;Remover
+                        </button>
+                    </div>
+                `;
+                lista.appendChild(li);
+            });
+
+            totalElement.textContent = `${total.toFixed(2)}€`;
+            checkoutBtn.disabled = false;
+        }
+
+        // --- FUNÇÕES DE INTERAÇÃO ---
+        
+        function adicionarAoCarrinho(id, nome, preco) {
+            carrinho.push({ id, nome, preco });
+            saveCart();
+            renderCart();
+        }
+
+        function removerDoCarrinho(id) {
+            // Remove apenas a primeira ocorrência do item com esse ID
+            const index = carrinho.findIndex(item => item.id === id);
+            if (index > -1) {
+                carrinho.splice(index, 1);
+            }
+            saveCart();
+            renderCart();
+        }
+
+        // 3. Função de Finalizar Compra: Prepara o resumo e abre o Google Forms
+        function finalizarCompra() {
+            if (carrinho.length === 0) return;
+
+            // 1. Calcular resumo para a mensagem
+            let resumoTexto = "Encomenda (Resumo Completo):\n";
+            let totalFinal = 0;
+
+            // Agrupa novamente para o resumo final (mais simples)
+            const resumo = carrinho.reduce((acc, item) => {
+                const nomeCompleto = `${item.nome} (${item.preco.toFixed(2)}€)`;
+                if (!acc[nomeCompleto]) {
+                    acc[nomeCompleto] = 0;
+                }
+                acc[nomeCompleto]++;
+                totalFinal += item.preco;
+                return acc;
+            }, {});
+
+            // Constrói o texto linha por linha
+            for (const [nome, quantidade] of Object.entries(resumo)) {
+                resumoTexto += `${quantidade}x ${nome}\n`;
+            }
+            resumoTexto += `\nTOTAL FINAL: ${totalFinal.toFixed(2)}€`;
+            
+            
+            // 2. Constrói o link de checkout
+            const urlFinal = `${LINK_FORMULARIO}?usp=pp_url&${ID_CAMPO_PRODUTO}=${encodeURIComponent(resumoTexto)}`;
+            
+            // Opcional: Limpar carrinho após abrir o formulário
+            carrinho = [];
+            saveCart();
+            renderCart();
+
+            // Abre o formulário numa nova aba
+            window.open(urlFinal, '_blank');
+        }
+
+        // 4. Função para carregar os produtos do JSON e desenhar os cartões
         async function carregarLoja() {
             try {
                 const resposta = await fetch('produtos.json');
@@ -72,24 +197,22 @@
 
                 produtos.forEach(produto => {
                     const col = document.createElement('div');
-                    col.className = 'col-md-4 mb-4';
+                    col.className = 'col-md-6 mb-4'; // Usar col-md-6 para 2 colunas no grid
 
                     let botaoHTML = '';
                     let badgeHTML = '';
-                    let classeExtra = '';
 
-                    // Lógica de Stock
+                    // O botão agora chama adicionarAoCarrinho
                     if (produto.disponivel) {
-                        botaoHTML = `<button onclick="comprarFormulario('${produto.nome}', ${produto.preco})" class="btn btn-success w-100">Comprar Agora</button>`;
+                        botaoHTML = `<button onclick="adicionarAoCarrinho(${produto.id}, '${produto.nome}', ${produto.preco})" class="btn btn-primary w-100">Adicionar ao Carrinho</button>`;
                     } else {
                         botaoHTML = `<button class="btn btn-secondary w-100" disabled>Esgotado</button>`;
                         badgeHTML = `<span class="badge bg-danger badge-esgotado">Sem Stock</span>`;
-                        classeExtra = 'esgotado';
                     }
 
                     // HTML do cartão
                     col.innerHTML = `
-                        <div class="card h-100 shadow-sm ${classeExtra}">
+                        <div class="card h-100 shadow-sm">
                             <div class="position-relative">
                                 <img src="${produto.imagem}" class="card-img-top" alt="${produto.nome}" onerror="this.src='https://placehold.co/600x400?text=Foto Em Falta'">
                                 ${badgeHTML}
@@ -110,17 +233,13 @@
             }
         }
 
-        // Função de Compra: Abre o Google Forms pré-preenchido
-        function comprarFormulario(nomeProduto, precoProduto) {
-            const textoProduto = `${nomeProduto} - ${precoProduto.toFixed(2)}€`;
-            
-            // Constrói o URL que preenche o campo "Produto" automaticamente
-            const urlFinal = `${LINK_FORMULARIO}?usp=pp_url&${ID_CAMPO_PRODUTO}=${encodeURIComponent(textoProduto)}`;
-            
-            window.open(urlFinal, '_blank');
-        }
+        // Iniciar: Carregar Carrinho e Desenhar Loja ao carregar a página
+        document.addEventListener('DOMContentLoaded', () => {
+            loadCart();
+            renderCart();
+            carregarLoja();
+        });
 
-        carregarLoja();
     </script>
 </body>
 </html>
