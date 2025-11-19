@@ -2,7 +2,7 @@
     {
         "id": 1,
         "nome": "Camisola Principal 24/25",
-        "descricao": "A camisola oficial de jogo.",
+        "descricao": "A camisola oficial de jogo. 100% Poliéster.",
         "preco": 25.00,
         "imagem": "imagens/camisola.jpg",
         "disponivel": true
@@ -14,5 +14,13 @@
         "preco": 10.00,
         "imagem": "imagens/cachecol.jpg",
         "disponivel": true
+    },
+    {
+        "id": 3,
+        "nome": "Fato de Treino",
+        "descricao": "Casaco e calças. Modelo de saída.",
+        "preco": 45.00,
+        "imagem": "imagens/fatodetreno.jpg",
+        "disponivel": false
     }
 ]
