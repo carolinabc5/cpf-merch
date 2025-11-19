@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "nome": "Camisola Principal 24/25",
+        "descricao": "A camisola oficial de jogo.",
+        "preco": 25.00,
+        "imagem": "imagens/camisola.jpg",
+        "disponivel": true
+    },
+    {
+        "id": 2,
+        "nome": "Cachecol Oficial",
+        "descricao": "Cachecol de lã com o símbolo do clube.",
+        "preco": 10.00,
+        "imagem": "imagens/cachecol.jpg",
+        "disponivel": true
+    }
+]
