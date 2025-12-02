@@ -1,258 +1,274 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Oficial do Clube de Futsal</title>
+    <title>Loja Oficial - Clube Futsal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
     <style>
+        .hero-banner {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://placehold.co/1200x400/222/FFF?text=Foto+da+Equipa');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
         .card-img-top { height: 250px; object-fit: cover; }
-        .esgotado { opacity: 0.5; pointer-events: none; }
-        .badge-esgotado { position: absolute; top: 10px; right: 10px; }
-        .sticky-top { top: 20px; } /* Faz o carrinho ficar fixo ao fazer scroll */
+        .cart-badge { position: absolute; top: 0; right: 0; transform: translate(25%, -25%); }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <header class="bg-dark text-white text-center py-5 mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container">
-            <h1>👕 Merchandising Oficial</h1>
+            <a class="navbar-brand fw-bold" href="#">CLUBE FUTSAL</a>
+            <button class="btn btn-warning position-relative" data-bs-toggle="modal" data-bs-target="#cartModal">
+                <i class="bi bi-cart-fill"></i> Carrinho
+                <span class="badge bg-danger rounded-pill cart-badge" id="cartCount">0</span>
+            </button>
         </div>
-    </header>
+    </nav>
 
-    <div class="container mt-5">
-        
-        <div class="alert alert-warning text-center" role="alert">
-            <strong>Processo de Compra:</strong> Adicione os produtos, clique em "Finalizar Compra" e siga as instruções no formulário (IBAN/Comprovativo).
+    <div class="hero-banner">
+        <div class="container">
+            <h1>Loja Oficial</h1>
+            <p class="lead">Veste as nossas cores dentro e fora de campo.</p>
         </div>
+    </div>
 
-        <div class="row">
-            
-            <div class="col-md-8">
-                <h2 class="mb-4">Catálogo de Produtos</h2>
-                <div class="row" id="contentor-produtos">
-                    </div>
+    <div class="container my-5">
+        <div class="row g-4" id="products-container">
             </div>
-            
-            <div class="col-md-4">
-                <div id="carrinho-painel" class="card shadow-sm sticky-top">
-                    <div class="card-header bg-primary text-white">
-                        🛒 O Seu Carrinho
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3">
+        <p class="mb-0">&copy; 2024 Clube de Futsal. Todos os direitos reservados.</p>
+    </footer>
+
+    <div class="modal fade" id="cartModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">O teu Carrinho</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <div id="cartItems" class="mb-4">
+                        <p class="text-center text-muted">O carrinho está vazio.</p>
                     </div>
-                    <div class="card-body">
-                        <ul class="list-group list-group-flush mb-3" id="carrinho-lista">
-                            <li class="list-group-item text-center text-muted">Carrinho Vazio</li>
-                        </ul>
-                        <h5 class="text-right">Total: <span id="carrinho-total">0.00€</span></h5>
+                    
+                    <h4 class="text-end fw-bold">Total: <span id="cartTotal">€0.00</span></h4>
+                    <hr>
+
+                    <div id="checkoutFormSection" style="display:none;">
+                        <h5 class="mb-3">Dados para Envio</h5>
                         
-                        <button id="checkout-btn" onclick="finalizarCompra()" class="btn btn-success w-100 mt-3" disabled>
-                            Finalizar Compra
-                        </button>
+                        <form action="https://formsubmit.co/SEU_EMAIL_DO_CLUBE@GMAIL.COM" method="POST" id="checkoutForm">
+                            
+                            <input type="hidden" name="_captcha" value="false">
+                            <input type="hidden" name="_template" value="table">
+                            <input type="hidden" name="_subject" value="Nova Encomenda Loja Futsal">
+                            <input type="hidden" name="_next" value="https://seusite.github.io/obrigado.html">
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <input type="text" name="nome" class="form-control" placeholder="Nome Completo" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" name="telemovel" class="form-control" placeholder="Telemóvel" required>
+                                </div>
+                                <div class="col-12">
+                                    <input type="email" name="email" class="form-control" placeholder="Email (para envio do comprovativo)" required>
+                                </div>
+                                <div class="col-12">
+                                    <textarea name="morada" class="form-control" rows="2" placeholder="Morada Completa de Envio" required></textarea>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="resumo_pedido" id="inputPedido">
+                            <input type="hidden" name="valor_total" id="inputTotal">
+
+                            <div class="d-grid gap-2 mt-4">
+                                <button type="submit" class="btn btn-success btn-lg" onclick="prepararEnvio()">
+                                    Confirmar Encomenda
+                                </button>
+                                <small class="text-center text-muted">Ao confirmar, receberá os dados de IBAN para pagamento.</small>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="text-center py-4 mt-5 bg-white border-top">
-        <p>&copy; 2024 Clube de Futsal - Powered by Git & Google Forms.</p>
-    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     <script>
-        // --- 🔴 CONFIGURAÇÃO OBRIGATÓRIA (Substituir pelos teus IDs do Google Forms) ---
-        const LINK_FORMULARIO = "https://docs.google.com/forms/d/e/SEU_LINK_BASE_AQUI/viewform";
-        const ID_CAMPO_PRODUTO = "entry.SEU_ID_DO_CAMPO_PRODUTO"; 
-        // -------------------------------------------------------------------------
+        // --- 1. CONFIGURAÇÃO DOS PRODUTOS ---
+        const produtos = [
+            {
+                id: 1,
+                nome: "Camisola Principal 24/25",
+                preco: 35.00,
+                imagem: "https://placehold.co/400x400/003366/FFF?text=Camisola+Principal",
+                temTamanho: true,
+                temPersonalizacao: true
+            },
+            {
+                id: 2,
+                nome: "Camisola Alternativa",
+                preco: 30.00,
+                imagem: "https://placehold.co/400x400/eee/333?text=Camisola+Alternativa",
+                temTamanho: true,
+                temPersonalizacao: true
+            },
+            {
+                id: 3,
+                nome: "Cachecol do Clube",
+                preco: 10.00,
+                imagem: "https://placehold.co/400x400/990000/FFF?text=Cachecol",
+                temTamanho: false,
+                temPersonalizacao: false
+            },
+            {
+                id: 4,
+                nome: "Kit de Treino",
+                preco: 25.00,
+                imagem: "https://placehold.co/400x400/333/FFF?text=Kit+Treino",
+                temTamanho: true,
+                temPersonalizacao: false
+            }
+        ];
 
         let carrinho = [];
 
-        // --- FUNÇÕES DE CARRINHO E ARMAZENAMENTO (localStorage) ---
-
-        function loadCart() {
-            const storedCart = localStorage.getItem('futsal_merch_cart');
-            if (storedCart) {
-                carrinho = JSON.parse(storedCart);
-            }
-        }
-
-        function saveCart() {
-            localStorage.setItem('futsal_merch_cart', JSON.stringify(carrinho));
-        }
-
-        function renderCart() {
-            const lista = document.getElementById('carrinho-lista');
-            const totalElement = document.getElementById('carrinho-total');
-            const checkoutBtn = document.getElementById('checkout-btn');
+        // --- 2. RENDERIZAR PRODUTOS NA TELA ---
+        const container = document.getElementById('products-container');
+        
+        produtos.forEach(prod => {
+            let opcoesHTML = '';
             
-            lista.innerHTML = '';
+            if(prod.temTamanho) {
+                opcoesHTML += `
+                <select class="form-select mb-2" id="tamanho-${prod.id}">
+                    <option value="S">S</option>
+                    <option value="M" selected>M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>`;
+            }
+
+            if(prod.temPersonalizacao) {
+                opcoesHTML += `
+                <input type="text" class="form-control mb-2" id="pers-nome-${prod.id}" placeholder="Nome nas Costas">
+                <input type="number" class="form-control mb-2" id="pers-num-${prod.id}" placeholder="Nº">`;
+            }
+
+            const html = `
+            <div class="col-md-3 col-sm-6">
+                <div class="card h-100 shadow-sm">
+                    <img src="${prod.imagem}" class="card-img-top" alt="${prod.nome}">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">${prod.nome}</h5>
+                        <p class="card-text fw-bold text-primary">€${prod.preco.toFixed(2)}</p>
+                        <div class="mt-auto">
+                            ${opcoesHTML}
+                            <button class="btn btn-dark w-100 mt-2" onclick="adicionarAoCarrinho(${prod.id})">
+                                Adicionar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            container.innerHTML += html;
+        });
+
+        // --- 3. LÓGICA DO CARRINHO ---
+        function adicionarAoCarrinho(id) {
+            const prod = produtos.find(p => p.id === id);
+            
+            // Capturar opções
+            let tamanho = prod.temTamanho ? document.getElementById(`tamanho-${id}`).value : 'Único';
+            let persNome = prod.temPersonalizacao ? document.getElementById(`pers-nome-${id}`).value : '';
+            let persNum = prod.temPersonalizacao ? document.getElementById(`pers-num-${id}`).value : '';
+            let detalhes = persNome || persNum ? `${persNome} (#${persNum})` : '';
+
+            // Adicionar ao array
+            carrinho.push({
+                ...prod,
+                tamanhoEscolhido: tamanho,
+                personalizacao: detalhes
+            });
+
+            atualizarUI();
+            alert("Produto adicionado!");
+        }
+
+        function removerDoCarrinho(index) {
+            carrinho.splice(index, 1);
+            atualizarUI();
+        }
+
+        function atualizarUI() {
+            // Atualizar Badge
+            document.getElementById('cartCount').innerText = carrinho.length;
+
+            // Atualizar Lista Modal
+            const cartList = document.getElementById('cartItems');
+            const formSection = document.getElementById('checkoutFormSection');
             let total = 0;
+            let html = '';
 
             if (carrinho.length === 0) {
-                lista.innerHTML = '<li class="list-group-item text-center text-muted">Carrinho Vazio</li>';
-                checkoutBtn.disabled = true;
-                totalElement.textContent = '0.00€';
+                cartList.innerHTML = '<p class="text-center text-muted">Carrinho vazio.</p>';
+                formSection.style.display = 'none';
+                document.getElementById('cartTotal').innerText = '€0.00';
                 return;
             }
 
-            // Agrupa itens para mostrar quantidade (ex: 3x Camisola)
-            const itensAgrupados = carrinho.reduce((acc, item) => {
-                const key = `${item.id}-${item.nome}`; // Chave única
-                if (!acc[key]) {
-                    acc[key] = { ...item, quantidade: 0 };
-                }
-                acc[key].quantidade++;
-                return acc;
-            }, {});
-
-            
-            Object.values(itensAgrupados).forEach((item) => {
-                const subtotal = item.preco * item.quantidade;
-                total += subtotal;
-
-                const li = document.createElement('li');
-                li.className = 'list-group-item d-flex justify-content-between align-items-center';
-                li.innerHTML = `
-                    <span>
-                        ${item.nome} (${item.quantidade}x)
-                    </span>
+            carrinho.forEach((item, index) => {
+                total += item.preco;
+                html += `
+                <div class="d-flex justify-content-between align-items-center border-bottom py-2">
                     <div>
-                        ${subtotal.toFixed(2)}€
-                        <button class="btn btn-sm btn-danger ms-2" onclick="removerDoCarrinho(${item.id})">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <strong>${item.nome}</strong> <br>
+                        <small class="text-muted">Tam: ${item.tamanhoEscolhido} ${item.personalizacao ? '| ' + item.personalizacao : ''}</small>
                     </div>
-                `;
-                lista.appendChild(li);
+                    <div class="d-flex align-items-center">
+                        <span class="me-3">€${item.preco.toFixed(2)}</span>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removerDoCarrinho(${index})">&times;</button>
+                    </div>
+                </div>`;
             });
 
-            totalElement.textContent = `${total.toFixed(2)}€`;
-            checkoutBtn.disabled = false;
-        }
-        
-        // --- LÓGICA DE INTERAÇÃO ---
-
-        function adicionarAoCarrinho(id, nome, preco) {
-            carrinho.push({ id, nome, preco });
-            saveCart();
-            renderCart();
+            cartList.innerHTML = html;
+            document.getElementById('cartTotal').innerText = '€' + total.toFixed(2);
+            formSection.style.display = 'block'; // Mostrar formulário se houver itens
         }
 
-        function removerDoCarrinho(id) {
-            // Remove apenas a primeira ocorrência do item com esse ID (para manter a funcionalidade de "remover 1")
-            const index = carrinho.findIndex(item => item.id === id);
-            if (index > -1) {
-                carrinho.splice(index, 1);
-            }
-            saveCart();
-            renderCart();
-        }
+        // --- 4. PREPARAR DADOS PARA O FORMSUBMIT ---
+        function prepararEnvio() {
+            // Transforma o array do carrinho em texto legível para o email
+            let textoPedido = "";
+            let total = 0;
 
-        function finalizarCompra() {
-            if (carrinho.length === 0) return;
+            carrinho.forEach(item => {
+                textoPedido += `1x ${item.nome} (Tam: ${item.tamanhoEscolhido}) `;
+                if(item.personalizacao) textoPedido += `[Pers: ${item.personalizacao}] `;
+                textoPedido += `- €${item.preco.toFixed(2)}\n`;
+                total += item.preco;
+            });
 
-            // 1. Calcular resumo para enviar ao Google Forms
-            let resumoTexto = "--- ENCOMENDA MERCHANDISING CLUB ---\n";
-            let totalFinal = 0;
-
-            const resumo = carrinho.reduce((acc, item) => {
-                const nomeCompleto = `${item.nome} (${item.preco.toFixed(2)}€)`;
-                if (!acc[nomeCompleto]) {
-                    acc[nomeCompleto] = 0;
-                }
-                acc[nomeCompleto]++;
-                totalFinal += item.preco;
-                return acc;
-            }, {});
-
-            for (const [nome, quantidade] of Object.entries(resumo)) {
-                resumoTexto += `${quantidade}x ${nome}\n`;
-            }
-            resumoTexto += `\nTOTAL FINAL A PAGAR: ${totalFinal.toFixed(2)}€`;
+            // Preenche os inputs ocultos
+            document.getElementById('inputPedido').value = textoPedido;
+            document.getElementById('inputTotal').value = "€" + total.toFixed(2);
             
-            
-            // 2. Constrói o link de checkout
-            const urlFinal = `${LINK_FORMULARIO}?usp=pp_url&${ID_CAMPO_PRODUTO}=${encodeURIComponent(resumoTexto)}`;
-            
-            // 3. Abre o formulário e limpa o carrinho local
-            carrinho = [];
-            saveCart();
-            renderCart();
-
-            window.open(urlFinal, '_blank');
+            // O form será submetido automaticamente após esta função
         }
-
-        // 4. Carregar os produtos do JSON e desenhar os cartões
-        async function carregarLoja() {
-            try {
-                const resposta = await fetch('produtos.json');
-                const produtos = await resposta.json();
-                const contentor = document.getElementById('contentor-produtos');
-
-                produtos.forEach(produto => {
-                    const col = document.createElement('div');
-                    // col-md-6 = duas colunas na secção de produtos
-                    col.className = 'col-md-6 mb-4'; 
-
-                    let botaoHTML = '';
-                    let badgeHTML = '';
-
-                    // O botão chama a função adicionarAoCarrinho
-                    if (produto.disponivel) {
-                        botaoHTML = `<button onclick="adicionarAoCarrinho(${produto.id}, '${produto.nome}', ${produto.preco})" class="btn btn-primary w-100">Adicionar ao Carrinho</button>`;
-                        
-                    } else {
-                        botaoHTML = `<button class="btn btn-secondary w-100" disabled>Esgotado</button>`;
-                        badgeHTML = `<span class="badge bg-danger badge-esgotado">Sem Stock</span>`;
-                    }
-
-                    // HTML do cartão
-                    col.innerHTML = `
-                        <div class="card h-100 shadow-sm">
-                            <div class="position-relative">
-                                <img src="${produto.imagem}" class="card-img-top" alt="${produto.nome}" onerror="this.src='https://placehold.co/600x400?text=Foto Em Falta'">
-                                ${badgeHTML}
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">${produto.nome}</h5>
-                                <p class="card-text text-muted">${produto.descricao}</p>
-                                <h4 class="text-primary mt-auto mb-3">${produto.preco.toFixed(2)}€</h4>
-                                ${botaoHTML}
-                            </div>
-                        </div>
-                    `;
-                    contentor.appendChild(col);
-                });
-
-            } catch (erro) {
-                console.error("Erro ao carregar produtos:", erro);
-            }
-        }
-
-        // Iniciar: Carregar Carrinho e Desenhar Loja ao carregar a página
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCart();
-            renderCart();
-            carregarLoja();
-        });
-
     </script>
+</body>
+</html>
