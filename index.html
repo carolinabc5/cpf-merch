@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loja Oficial | Clube Futsal</title>
+    <title>Loja Oficial | Casa do Povo de Freixo</title>
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
@@ -11,16 +11,17 @@
 
     <style>
         :root {
-            --cor-principal: #000000; /* Cor do Clube (Ex: Preto) */
-            --cor-destaque: #ffc107;  /* Cor de Detalhe (Ex: Amarelo/Dourado) */
+            --cor-principal: #000000; /* Cor do Clube */
+            --cor-destaque: #ffc107;  /* Cor de Detalhe */
         }
 
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f4f6f9;
+            scroll-behavior: smooth; /* Para o scroll ser suave ao clicar nas categorias */
         }
 
-        h1, h2, h3, h4, h5, .navbar-brand, .btn-sport {
+        h1, h2, h3, h4, h5, .navbar-brand, .btn-sport, .section-title {
             font-family: 'Oswald', sans-serif;
             text-transform: uppercase;
         }
@@ -29,6 +30,7 @@
         .navbar {
             background-color: var(--cor-principal);
             padding: 15px 0;
+            z-index: 1030;
         }
         .navbar-brand {
             font-size: 1.5rem;
@@ -40,19 +42,52 @@
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=1600'); 
             background-size: cover;
             background-position: center;
-            height: 60vh; /* Altura do banner */
+            height: 60vh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             color: white;
-            margin-bottom: 40px;
         }
 
         .hero-title {
             font-size: 4rem;
             font-weight: 700;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        /* --- BARRA DE CATEGORIAS (NOVO) --- */
+        .category-nav {
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 70px; /* Ajuste para ficar abaixo da Navbar principal */
+            z-index: 1020;
+            padding: 15px 0;
+            margin-bottom: 30px;
+        }
+        .nav-pill-custom {
+            color: var(--cor-principal);
+            font-weight: bold;
+            margin: 0 5px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            border: 1px solid #eee;
+            background: #fff;
+        }
+        .nav-pill-custom:hover, .nav-pill-custom.active {
+            background-color: var(--cor-principal);
+            color: var(--cor-destaque);
+            border-color: var(--cor-principal);
+        }
+
+        /* --- SECÇÕES (NOVO) --- */
+        .section-header {
+            border-left: 5px solid var(--cor-destaque);
+            padding-left: 15px;
+            margin-bottom: 30px;
+            margin-top: 50px;
         }
 
         /* --- PRODUTOS --- */
@@ -79,7 +114,7 @@
         .card-img-top {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Garante que a imagem preenche sem distorcer */
+            object-fit: cover;
         }
 
         .badge-novo {
@@ -108,13 +143,14 @@
             padding: 10px 20px;
             letter-spacing: 1px;
             transition: all 0.3s;
+            width: 100%; /* Botão ocupa largura total no card */
         }
         .btn-sport:hover {
             background-color: #333;
             color: var(--cor-destaque);
         }
 
-        /* --- FAB (Botão Flutuante do Carrinho) --- */
+        /* --- FAB (Botão Flutuante) --- */
         .floating-cart {
             position: fixed;
             bottom: 30px;
@@ -134,24 +170,19 @@
         }
         .floating-cart:hover { transform: scale(1.1); }
         .cart-badge-float {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background-color: red;
-            color: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            position: absolute; top: 0; right: 0;
+            background-color: red; color: white; border-radius: 50%;
+            width: 25px; height: 25px; font-size: 12px;
+            display: flex; align-items: center; justify-content: center;
         }
 
         /* Responsividade */
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
             .card-img-wrapper { height: 200px; }
+            .category-nav { top: 60px; overflow-x: auto; white-space: nowrap; } /* Mobile scroll */
+            .category-nav .container { display: block; }
+            .nav-pill-custom { display: inline-block; margin-bottom: 5px; }
         }
     </style>
 </head>
@@ -175,17 +206,42 @@
         </div>
     </header>
 
-    <section class="container py-5" id="catalogo">
-        <div class="row mb-5">
-            <div class="col-12 text-center">
-                <h2 class="display-6 fw-bold">DESTAQUES DA ÉPOCA</h2>
-                <div style="width: 60px; height: 4px; background: var(--cor-destaque); margin: 10px auto;"></div>
-            </div>
+    <div class="category-nav">
+        <div class="container d-flex justify-content-center">
+            <a href="#sec-jogo" class="btn nav-pill-custom">Equipamento de Jogo</a>
+            <a href="#sec-treino" class="btn nav-pill-custom">Treino</a>
+            <a href="#sec-streetwear" class="btn nav-pill-custom">Streetwear</a>
+            <a href="#sec-acessorios" class="btn nav-pill-custom">Acessórios</a>
         </div>
+    </div>
 
-        <div class="row g-4" id="products-container">
+    <div class="container pb-5">
+
+        <div id="sec-jogo" class="section-header">
+            <h2 class="section-title">Equipamento de Jogo</h2>
+        </div>
+        <div class="row g-4" id="container-jogo">
             </div>
-    </section>
+
+        <div id="sec-treino" class="section-header">
+            <h2 class="section-title">Linha de Treino</h2>
+        </div>
+        <div class="row g-4" id="container-treino">
+            </div>
+
+        <div id="sec-streetwear" class="section-header">
+            <h2 class="section-title">Moda Casual / Streetwear</h2>
+        </div>
+        <div class="row g-4" id="container-streetwear">
+            </div>
+
+        <div id="sec-acessorios" class="section-header">
+            <h2 class="section-title">Acessórios</h2>
+        </div>
+        <div class="row g-4" id="container-acessorios">
+            </div>
+
+    </div>
 
     <footer class="bg-dark text-white text-center py-5 mt-5">
         <div class="container">
@@ -238,83 +294,79 @@
 
     <script>
         // --- 1. DADOS DOS PRODUTOS ---
-        // Edite aqui as imagens e preços
+        // Adicionei a propriedade 'categoria' (jogo, treino, streetwear, acessorios)
         const produtos = [
-            {
-                id: 1,
-                nome: "Camisola Principal 25/26",
-                preco: 35.00,
-                imagem: "https://placehold.co/600x800/000000/FFF?text=Kit+Home", // Trocar por foto real
-                tag: "",
-                tamanhos: true
-            },
-            {
-                id: 2,
-                nome: "Camisola Alternativa 25/26",
-                preco: 35.00,
-                imagem: "https://placehold.co/600x800/FFD700/000?text=Kit+Away",
-                tag: "",
-                tamanhos: true
-            },
-            {
-                id: 3,
-                nome: "Cachecol",
-                preco: 10.00,
-                imagem: "https://placehold.co/600x800/990000/FFF?text=Cachecol",
-                tag: "",
-                tamanhos: false
-            },
-            {
-                id: 4,
-                nome: "Sweat",
-                preco: 20.00,
-                imagem: "https://placehold.co/600x800/333/FFF?text=Casaco",
-                tag: "",
-                tamanhos: true
-            }
+            // JOGO
+            { id: 1, nome: "Camisola Principal 25/26", categoria: "jogo", preco: 35.00, imagem: "https://placehold.co/600x800/000000/FFF?text=Kit+Home", tag: "Oficial", tamanhos: true },
+            { id: 2, nome: "Camisola Alternativa 25/26", categoria: "jogo", preco: 35.00, imagem: "https://placehold.co/600x800/FFD700/000?text=Kit+Away", tag: "", tamanhos: true },
+            
+            // TREINO
+            { id: 3, nome: "T-Shirt Treino", categoria: "treino", preco: 20.00, imagem: "https://placehold.co/600x800/333/FFF?text=Treino", tag: "", tamanhos: true },
+            
+            // STREETWEAR
+            { id: 4, nome: "Sweat Casual", categoria: "streetwear", preco: 40.00, imagem: "https://placehold.co/600x800/111/FFF?text=Sweat", tag: "Novo", tamanhos: true },
+            
+            // ACESSÓRIOS
+            { id: 5, nome: "Cachecol Ultras", categoria: "acessorios", preco: 10.00, imagem: "https://placehold.co/600x800/990000/FFF?text=Cachecol", tag: "", tamanhos: false },
+            { id: 6, nome: "Saco de Desporto", categoria: "acessorios", preco: 25.00, imagem: "https://placehold.co/600x800/444/FFF?text=Saco", tag: "", tamanhos: false }
         ];
 
         let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 
-        // --- 2. RENDERIZAR PRODUTOS ---
-        const container = document.getElementById('products-container');
-        
-        produtos.forEach(prod => {
-            let selectHTML = prod.tamanhos ? `
-                <select class="form-select mb-2" id="size-${prod.id}">
-                    <option value="S">S</option>
-                    <option value="M" selected>M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
-            ` : '<div class="mb-2" style="height:38px"></div>'; // Espaçador
+        // --- 2. FUNÇÃO PARA RENDERIZAR POR CATEGORIA ---
+        function renderizarCategoria(catId, containerId) {
+            const container = document.getElementById(containerId);
+            const produtosFiltrados = produtos.filter(p => p.categoria === catId);
 
-            let badgeHTML = prod.tag ? `<span class="badge-novo">${prod.tag}</span>` : '';
+            if(produtosFiltrados.length === 0) {
+                container.innerHTML = '<p class="text-muted ms-2">Em breve...</p>';
+                return;
+            }
 
-            container.innerHTML += `
-            <div class="col-md-3 col-sm-6">
-                <div class="card-produto h-100 d-flex flex-column">
-                    <div class="card-img-wrapper">
-                        ${badgeHTML}
-                        <img src="${prod.imagem}" class="card-img-top" alt="${prod.nome}">
-                    </div>
-                    <div class="p-3 d-flex flex-column flex-grow-1">
-                        <h5 class="fw-bold mb-1">${prod.nome}</h5>
-                        <div class="mt-auto pt-3">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <span class="price-tag">€${prod.preco.toFixed(2)}</span>
+            produtosFiltrados.forEach(prod => {
+                let selectHTML = prod.tamanhos ? `
+                    <select class="form-select mb-2" id="size-${prod.id}">
+                        <option value="S">S</option>
+                        <option value="M" selected>M</option>
+                        <option value="L">L</option>
+                        <option value="XL">XL</option>
+                    </select>
+                ` : '<div class="mb-2" style="height:38px"></div>';
+
+                let badgeHTML = prod.tag ? `<span class="badge-novo">${prod.tag}</span>` : '';
+
+                container.innerHTML += `
+                <div class="col-md-3 col-sm-6">
+                    <div class="card-produto h-100 d-flex flex-column">
+                        <div class="card-img-wrapper">
+                            ${badgeHTML}
+                            <img src="${prod.imagem}" class="card-img-top" alt="${prod.nome}">
+                        </div>
+                        <div class="p-3 d-flex flex-column flex-grow-1">
+                            <h5 class="fw-bold mb-1">${prod.nome}</h5>
+                            <div class="mt-auto pt-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="price-tag">€${prod.preco.toFixed(2)}</span>
+                                </div>
+                                ${selectHTML}
+                                <button class="btn btn-sport w-100" onclick="adicionar(${prod.id})">
+                                    ADICIONAR
+                                </button>
                             </div>
-                            ${selectHTML}
-                            <button class="btn btn-sport w-100" onclick="adicionar(${prod.id})">
-                                ADICIONAR AO CARRINHO
-                            </button>
                         </div>
                     </div>
-                </div>
-            </div>`;
-        });
+                </div>`;
+            });
+        }
 
-        // --- 3. FUNÇÕES DO CARRINHO ---
+        // Executar a renderização para cada secção
+        renderizarCategoria('jogo', 'container-jogo');
+        renderizarCategoria('treino', 'container-treino');
+        renderizarCategoria('streetwear', 'container-streetwear');
+        renderizarCategoria('acessorios', 'container-acessorios');
+
+
+        // --- 3. FUNÇÕES DO CARRINHO (Mantidas iguais) ---
         function adicionar(id) {
             const prod = produtos.find(p => p.id === id);
             const tamanho = prod.tamanhos ? document.getElementById(`size-${id}`).value : 'Único';
@@ -323,15 +375,15 @@
             localStorage.setItem('carrinho', JSON.stringify(carrinho));
             atualizarCarrinho();
             
-            // Feedback visual simples
+            // Feedback visual
             const btn = event.target;
             const textoOriginal = btn.innerText;
-            btn.innerText = "✔ ADICIONADO";
+            btn.innerText = "✔";
             btn.classList.replace("btn-sport", "btn-success");
             setTimeout(() => {
                 btn.innerText = textoOriginal;
                 btn.classList.replace("btn-success", "btn-sport");
-            }, 1500);
+            }, 1000);
         }
 
         function remover(index) {
@@ -376,10 +428,7 @@
             footer.style.display = 'block';
         }
 
-        // --- 4. NAVEGAÇÃO ---
         function irParaCheckout() {
-            // Como pediu páginas separadas, aqui vamos redirecionar
-            // Crie um ficheiro chamado "pagamento.html" depois
             window.location.href = "pagamento.html";
         }
 
