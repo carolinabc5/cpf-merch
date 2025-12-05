@@ -18,7 +18,7 @@
         body {
             font-family: 'Roboto', sans-serif;
             background-color: #f4f6f9;
-            scroll-behavior: smooth; /* Para o scroll ser suave ao clicar nas categorias */
+            scroll-behavior: smooth;
         }
 
         h1, h2, h3, h4, h5, .navbar-brand, .btn-sport, .section-title {
@@ -37,7 +37,7 @@
             letter-spacing: 1px;
         }
 
-        /* --- HERO BANNER (Capa) --- */
+        /* --- HERO BANNER --- */
         .hero-section {
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1575361204480-aadea25e6e68?q=80&w=1600'); 
             background-size: cover;
@@ -56,12 +56,12 @@
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* --- BARRA DE CATEGORIAS (NOVO) --- */
+        /* --- BARRA DE CATEGORIAS --- */
         .category-nav {
             background-color: white;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             position: sticky;
-            top: 70px; /* Ajuste para ficar abaixo da Navbar principal */
+            top: 70px;
             z-index: 1020;
             padding: 15px 0;
             margin-bottom: 30px;
@@ -82,12 +82,14 @@
             border-color: var(--cor-principal);
         }
 
-        /* --- SECÇÕES (NOVO) --- */
+        /* --- SECÇÕES --- */
         .section-header {
-            border-left: 5px solid var(--cor-destaque);
+            border-left: 5px solid var(--cor-destaque); /* Mantive a linha à esquerda, mas o container centra os produtos */
             padding-left: 15px;
             margin-bottom: 30px;
             margin-top: 50px;
+            /* Se quiser o título ao centro, descomente a linha abaixo: */
+            /* text-align: center; border-left: none; */ 
         }
 
         /* --- PRODUTOS --- */
@@ -97,6 +99,7 @@
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             background: white;
+            text-align: center; /* NOVO: Centra o texto dentro do cartão */
         }
 
         .card-produto:hover {
@@ -133,6 +136,7 @@
             color: var(--cor-principal);
             font-weight: 700;
             font-size: 1.4rem;
+            display: block; /* Garante que ocupa a largura toda para centrar */
         }
 
         /* --- BOTÕES --- */
@@ -143,7 +147,7 @@
             padding: 10px 20px;
             letter-spacing: 1px;
             transition: all 0.3s;
-            width: 100%; /* Botão ocupa largura total no card */
+            width: 100%;
         }
         .btn-sport:hover {
             background-color: #333;
@@ -180,8 +184,8 @@
         @media (max-width: 768px) {
             .hero-title { font-size: 2.5rem; }
             .card-img-wrapper { height: 200px; }
-            .category-nav { top: 60px; overflow-x: auto; white-space: nowrap; } /* Mobile scroll */
-            .category-nav .container { display: block; }
+            .category-nav { top: 60px; overflow-x: auto; white-space: nowrap; }
+            .category-nav .container { display: block; text-align: center; } /* Centrar botões em mobile */
             .nav-pill-custom { display: inline-block; margin-bottom: 5px; }
         }
     </style>
@@ -220,26 +224,26 @@
         <div id="sec-jogo" class="section-header">
             <h2 class="section-title">Equipamento de Jogo</h2>
         </div>
-        <div class="row g-4" id="container-jogo">
-            </div>
+        <div class="row g-4 justify-content-center" id="container-jogo">
+        </div>
 
         <div id="sec-treino" class="section-header">
             <h2 class="section-title">Linha de Treino</h2>
         </div>
-        <div class="row g-4" id="container-treino">
-            </div>
+        <div class="row g-4 justify-content-center" id="container-treino">
+        </div>
 
         <div id="sec-streetwear" class="section-header">
             <h2 class="section-title">Moda Casual / Streetwear</h2>
         </div>
-        <div class="row g-4" id="container-streetwear">
-            </div>
+        <div class="row g-4 justify-content-center" id="container-streetwear">
+        </div>
 
         <div id="sec-acessorios" class="section-header">
             <h2 class="section-title">Acessórios</h2>
         </div>
-        <div class="row g-4" id="container-acessorios">
-            </div>
+        <div class="row g-4 justify-content-center" id="container-acessorios">
+        </div>
 
     </div>
 
@@ -294,7 +298,6 @@
 
     <script>
         // --- 1. DADOS DOS PRODUTOS ---
-        // Adicionei a propriedade 'categoria' (jogo, treino, streetwear, acessorios)
         const produtos = [
             // JOGO
             { id: 1, nome: "Camisola Principal 25/26", categoria: "jogo", preco: 35.00, imagem: "https://placehold.co/600x800/000000/FFF?text=Kit+Home", tag: "", tamanhos: true },
@@ -319,13 +322,15 @@
             const produtosFiltrados = produtos.filter(p => p.categoria === catId);
 
             if(produtosFiltrados.length === 0) {
-                container.innerHTML = '<p class="text-muted ms-2">Em breve...</p>';
+                // Adicionei text-center para a mensagem de "Em breve" também
+                container.innerHTML = '<p class="text-muted text-center">Em breve...</p>';
                 return;
             }
 
             produtosFiltrados.forEach(prod => {
+                // Adicionei mx-auto e max-width ao select para ficar centrado e bonito
                 let selectHTML = prod.tamanhos ? `
-                    <select class="form-select mb-2" id="size-${prod.id}">
+                    <select class="form-select mb-2 mx-auto" style="max-width: 150px;" id="size-${prod.id}">
                         <option value="S">S</option>
                         <option value="M" selected>M</option>
                         <option value="L">L</option>
@@ -336,8 +341,7 @@
                 let badgeHTML = prod.tag ? `<span class="badge-novo">${prod.tag}</span>` : '';
 
                 container.innerHTML += `
-                <div class="col-md-3 col-sm-6">
-                    <div class="card-produto h-100 d-flex flex-column">
+                <div class="col-md-3 col-sm-6 col-10"> <div class="card-produto h-100 d-flex flex-column">
                         <div class="card-img-wrapper">
                             ${badgeHTML}
                             <img src="${prod.imagem}" class="card-img-top" alt="${prod.nome}">
@@ -345,11 +349,9 @@
                         <div class="p-3 d-flex flex-column flex-grow-1">
                             <h5 class="fw-bold mb-1">${prod.nome}</h5>
                             <div class="mt-auto pt-3">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <span class="price-tag">€${prod.preco.toFixed(2)}</span>
-                                </div>
+                                <span class="price-tag mb-2">€${prod.preco.toFixed(2)}</span>
                                 ${selectHTML}
-                                <button class="btn btn-sport w-100" onclick="adicionar(${prod.id})">
+                                <button class="btn btn-sport" onclick="adicionar(${prod.id})">
                                     ADICIONAR
                                 </button>
                             </div>
@@ -359,14 +361,13 @@
             });
         }
 
-        // Executar a renderização para cada secção
         renderizarCategoria('jogo', 'container-jogo');
         renderizarCategoria('treino', 'container-treino');
         renderizarCategoria('streetwear', 'container-streetwear');
         renderizarCategoria('acessorios', 'container-acessorios');
 
 
-        // --- 3. FUNÇÕES DO CARRINHO (Mantidas iguais) ---
+        // --- 3. FUNÇÕES DO CARRINHO ---
         function adicionar(id) {
             const prod = produtos.find(p => p.id === id);
             const tamanho = prod.tamanhos ? document.getElementById(`size-${id}`).value : 'Único';
@@ -375,7 +376,6 @@
             localStorage.setItem('carrinho', JSON.stringify(carrinho));
             atualizarCarrinho();
             
-            // Feedback visual
             const btn = event.target;
             const textoOriginal = btn.innerText;
             btn.innerText = "✔";
@@ -413,8 +413,7 @@
                 total += item.preco;
                 lista.innerHTML += `
                 <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                    <div>
-                        <div class="fw-bold">${item.nome}</div>
+                    <div class="text-start"> <div class="fw-bold">${item.nome}</div>
                         <small class="text-muted">Tam: ${item.tamanho}</small>
                     </div>
                     <div class="d-flex align-items-center">
