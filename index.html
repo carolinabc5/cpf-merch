@@ -12,7 +12,7 @@
     <style>
         :root {
             --cor-principal: #000000; /* Cor do Clube */
-            --cor-destaque: #ff0000;  /* Cor de Detalhe */
+            --cor-destaque: #ff0000;  /* Cor de Detalhe (Vermelho) */
         }
 
         body {
@@ -82,14 +82,23 @@
             border-color: var(--cor-principal);
         }
 
-        /* --- SECÇÕES --- */
+        /* --- SECÇÕES (CENTRADAS) --- */
         .section-header {
-            border-left: 5px solid var(--cor-destaque); /* Mantive a linha à esquerda, mas o container centra os produtos */
-            padding-left: 15px;
-            margin-bottom: 30px;
-            margin-top: 50px;
-            /* Se quiser o título ao centro, descomente a linha abaixo: */
-            /* text-align: center; border-left: none; */ 
+            text-align: center; /* Centra o texto */
+            margin-bottom: 40px;
+            margin-top: 60px;
+            position: relative;
+        }
+
+        /* Linha decorativa por baixo do título */
+        .section-header::after {
+            content: '';
+            display: block;
+            width: 80px;        /* Largura da linha */
+            height: 4px;        /* Altura da linha */
+            background-color: var(--cor-destaque);
+            margin: 10px auto 0; /* 'auto' centra a linha horizontalmente */
+            border-radius: 2px;
         }
 
         /* --- PRODUTOS --- */
@@ -99,7 +108,7 @@
             overflow: hidden;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             background: white;
-            text-align: center; /* NOVO: Centra o texto dentro do cartão */
+            text-align: center; /* Texto centrado no cartão */
         }
 
         .card-produto:hover {
@@ -125,7 +134,7 @@
             top: 10px;
             left: 10px;
             background-color: var(--cor-destaque);
-            color: black;
+            color: white; /* Mudei para branco para ler melhor no vermelho */
             padding: 5px 10px;
             font-weight: bold;
             font-size: 0.8rem;
@@ -136,7 +145,7 @@
             color: var(--cor-principal);
             font-weight: 700;
             font-size: 1.4rem;
-            display: block; /* Garante que ocupa a largura toda para centrar */
+            display: block;
         }
 
         /* --- BOTÕES --- */
@@ -160,7 +169,7 @@
             bottom: 30px;
             right: 30px;
             background-color: var(--cor-destaque);
-            color: black;
+            color: white;
             width: 70px;
             height: 70px;
             border-radius: 50%;
@@ -175,9 +184,10 @@
         .floating-cart:hover { transform: scale(1.1); }
         .cart-badge-float {
             position: absolute; top: 0; right: 0;
-            background-color: red; color: white; border-radius: 50%;
+            background-color: #000; color: white; border-radius: 50%;
             width: 25px; height: 25px; font-size: 12px;
             display: flex; align-items: center; justify-content: center;
+            border: 2px solid white;
         }
 
         /* Responsividade */
@@ -185,7 +195,7 @@
             .hero-title { font-size: 2.5rem; }
             .card-img-wrapper { height: 200px; }
             .category-nav { top: 60px; overflow-x: auto; white-space: nowrap; }
-            .category-nav .container { display: block; text-align: center; } /* Centrar botões em mobile */
+            .category-nav .container { display: block; text-align: center; }
             .nav-pill-custom { display: inline-block; margin-bottom: 5px; }
         }
     </style>
@@ -316,19 +326,16 @@
 
         let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 
-        // --- 2. FUNÇÃO PARA RENDERIZAR POR CATEGORIA ---
         function renderizarCategoria(catId, containerId) {
             const container = document.getElementById(containerId);
             const produtosFiltrados = produtos.filter(p => p.categoria === catId);
 
             if(produtosFiltrados.length === 0) {
-                // Adicionei text-center para a mensagem de "Em breve" também
                 container.innerHTML = '<p class="text-muted text-center">Em breve...</p>';
                 return;
             }
 
             produtosFiltrados.forEach(prod => {
-                // Adicionei mx-auto e max-width ao select para ficar centrado e bonito
                 let selectHTML = prod.tamanhos ? `
                     <select class="form-select mb-2 mx-auto" style="max-width: 150px;" id="size-${prod.id}">
                         <option value="S">S</option>
@@ -341,7 +348,8 @@
                 let badgeHTML = prod.tag ? `<span class="badge-novo">${prod.tag}</span>` : '';
 
                 container.innerHTML += `
-                <div class="col-md-3 col-sm-6 col-10"> <div class="card-produto h-100 d-flex flex-column">
+                <div class="col-md-3 col-sm-6 col-10">
+                    <div class="card-produto h-100 d-flex flex-column">
                         <div class="card-img-wrapper">
                             ${badgeHTML}
                             <img src="${prod.imagem}" class="card-img-top" alt="${prod.nome}">
@@ -366,8 +374,6 @@
         renderizarCategoria('streetwear', 'container-streetwear');
         renderizarCategoria('acessorios', 'container-acessorios');
 
-
-        // --- 3. FUNÇÕES DO CARRINHO ---
         function adicionar(id) {
             const prod = produtos.find(p => p.id === id);
             const tamanho = prod.tamanhos ? document.getElementById(`size-${id}`).value : 'Único';
@@ -413,7 +419,8 @@
                 total += item.preco;
                 lista.innerHTML += `
                 <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                    <div class="text-start"> <div class="fw-bold">${item.nome}</div>
+                    <div class="text-start">
+                        <div class="fw-bold">${item.nome}</div>
                         <small class="text-muted">Tam: ${item.tamanho}</small>
                     </div>
                     <div class="d-flex align-items-center">
@@ -431,7 +438,6 @@
             window.location.href = "pagamento.html";
         }
 
-        // Inicializar
         atualizarCarrinho();
     </script>
 </body>
